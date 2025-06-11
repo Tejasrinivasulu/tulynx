@@ -1,8 +1,8 @@
-import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
-import { v4 as uuidv4 } from 'uuid';
+import cors from 'cors';
+import express from 'express';
 import { MongoClient } from 'mongodb';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const PORT = 3001;
@@ -53,7 +53,7 @@ const perfumes = [
     price: 329,
     category: 'Woody',
     gender: 'Men',
-    image: 'https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://buyfunoon.com/cdn/shop/files/Urban-Legend.webp?v=1741598811&width=416',
     description: 'Bold and sophisticated woody fragrance with leather and tobacco undertones.',
     fragranceNotes: {
       top: ['Grapefruit', 'Cardamom', 'Ginger'],
@@ -87,7 +87,7 @@ const perfumes = [
     price: 399,
     category: 'Oriental',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://fimgs.net/mdimg/secundar/fit.116142.jpg',
     description: 'Luxurious amber-based fragrance with golden warmth and regal sophistication.',
     fragranceNotes: {
       top: ['Saffron', 'Orange Blossom', 'Raspberry'],
@@ -104,7 +104,7 @@ const perfumes = [
     price: 279,
     category: 'Woody',
     gender: 'Men',
-    image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://godofessence.com/cdn/shop/files/whisper-of-woods-extrait-de-parfum-for-unisex-exclusive-347148.png?v=1732001245',
     description: 'Deep forest essence with pine, oak moss, and earthy undertones.',
     fragranceNotes: {
       top: ['Pine', 'Eucalyptus', 'Bergamot'],
@@ -121,7 +121,7 @@ const perfumes = [
     price: 349,
     category: 'Floral',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://alhassan.in/cdn/shop/files/Al_Hassan-1-Photoroom.jpg?v=1746597458',
     description: 'Luxurious rose petals with velvety smooth finish and romantic allure.',
     fragranceNotes: {
       top: ['Bulgarian Rose', 'Pink Pepper', 'Mandarin'],
@@ -138,7 +138,7 @@ const perfumes = [
     price: 189,
     category: 'Fresh',
     gender: 'Unisex',
-    image: 'https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNJCdV7VDa6sFyir07C56O0L2r4SKs7sjV0w&s',
     description: 'Energizing citrus blend that awakens the senses with vibrant freshness.',
     fragranceNotes: {
       top: ['Grapefruit', 'Lime', 'Orange'],
@@ -155,7 +155,7 @@ const perfumes = [
     price: 459,
     category: 'Oriental',
     gender: 'Unisex',
-    image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://uffco.com/cdn/shop/files/UNISEX_4.png?v=1746021248&width=1946',
     description: 'Rare and precious oud wood creates an intoxicating and mysterious aura.',
     fragranceNotes: {
       top: ['Saffron', 'Rose', 'Cardamom'],
@@ -172,7 +172,7 @@ const perfumes = [
     price: 229,
     category: 'Fresh',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/1190829/pexels-photo-1190829.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://media.bodycupid.com/public/20de2494-f98f-448d-a285-71d507bd1783?f=webp',
     description: 'Calming lavender fields captured in a bottle with serene and peaceful notes.',
     fragranceNotes: {
       top: ['French Lavender', 'Bergamot', 'Lemon'],
@@ -189,7 +189,7 @@ const perfumes = [
     price: 319,
     category: 'Oriental',
     gender: 'Men',
-    image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://d12d6l12s3d372.cloudfront.net/spicy_fragrances_for_men_b73832a132.jpg',
     description: 'Exotic spice bazaar adventure with warm and inviting oriental spices.',
     fragranceNotes: {
       top: ['Cinnamon', 'Nutmeg', 'Black Pepper'],
@@ -206,7 +206,7 @@ const perfumes = [
     price: 269,
     category: 'Floral',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/3685530/pexels-photo-3685530.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://fraganote.com/cdn/shop/files/WhiteFloral05.png?v=1742461316',
     description: 'Pure and elegant white lily with soft powdery finish and feminine grace.',
     fragranceNotes: {
       top: ['White Lily', 'Freesia', 'Green Leaves'],
@@ -223,7 +223,7 @@ const perfumes = [
     price: 389,
     category: 'Woody',
     gender: 'Men',
-    image: 'https://images.pexels.com/photos/1040173/pexels-photo-1040173.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://i.ebayimg.com/images/g/vFQAAOSwfnNhyebS/s-l1200.jpg',
     description: 'Rich tobacco leaves and supple leather create a distinguished masculine scent.',
     fragranceNotes: {
       top: ['Tobacco Leaf', 'Rum', 'Cinnamon'],
@@ -240,7 +240,7 @@ const perfumes = [
     price: 259,
     category: 'Floral',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/1190829/pexels-photo-1190829.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://www.mystore.in/s/62ea2c599d1398fa16dbae0a/664b400ec66ab40161d0e6e1/191133-01.jpg',
     description: 'Delicate cherry blossoms in spring breeze with soft and romantic appeal.',
     fragranceNotes: {
       top: ['Cherry Blossom', 'Pear', 'Mandarin'],
@@ -257,7 +257,7 @@ const perfumes = [
     price: 219,
     category: 'Fresh',
     gender: 'Unisex',
-    image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://5.imimg.com/data5/SELLER/Default/2023/7/323525531/FA/TQ/OF/133918514/aqua-marint-500x500.jpg',
     description: 'Crystal clear waters and marine breeze captured in refreshing aquatic notes.',
     fragranceNotes: {
       top: ['Sea Breeze', 'Cucumber', 'Mint'],
@@ -274,7 +274,7 @@ const perfumes = [
     price: 359,
     category: 'Oriental',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGrdquSScqlSbB-Z4qXgzCEFPM_n5ULqpiBA&s',
     description: 'Warm golden hour captured with rich amber and exotic florals.',
     fragranceNotes: {
       top: ['Orange Blossom', 'Mandarin', 'Saffron'],
@@ -291,7 +291,7 @@ const perfumes = [
     price: 289,
     category: 'Floral',
     gender: 'Women',
-    image: 'https://images.pexels.com/photos/1190829/pexels-photo-1190829.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://m.media-amazon.com/images/I/81M1F0zAjHL.AC_UF350,350_QL80.jpg',
     description: 'A unique blend of desert flowers and exotic spices.',
     fragranceNotes: {
       top: ['Rose', 'Saffron', 'Cardamom'],
@@ -308,7 +308,7 @@ const perfumes = [
     price: 239,
     category: 'Fresh',
     gender: 'Unisex',
-    image: 'https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=400',
+    image: 'https://i0.wp.com/deo.group/wp-content/uploads/2024/08/Fresh-Mountain-1.jpg?fit=1181%2C1181&ssl=1',
     description: 'Crisp and invigorating scent of mountain air and pine forests.',
     fragranceNotes: {
       top: ['Pine', 'Mint', 'Bergamot'],
