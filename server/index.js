@@ -3,13 +3,23 @@ import cors from 'cors';
 import express from 'express';
 import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../dist')));
+}
 
 // Expanded perfume data with more products
 const perfumes = [
@@ -408,9 +418,7 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 // Connection URL
-const url = 'mongodb://localhost:27017/';
-
-// Database Name
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017/';
 const dbName = 'yourDatabaseName';
 
 // Create a new MongoClient
@@ -430,6 +438,13 @@ async function connectToMongo() {
 
 connectToMongo();
 
+// Handle all routes in production
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+}
+
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

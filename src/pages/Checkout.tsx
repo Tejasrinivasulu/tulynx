@@ -56,41 +56,13 @@ const Checkout: React.FC = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('http://localhost:3001/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: state.items,
-          customerInfo: {
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            email: formData.email,
-            phone: formData.phone
-          },
-          shippingInfo: {
-            address: formData.address,
-            city: formData.city,
-            state: formData.state,
-            zipCode: formData.zipCode,
-            country: formData.country
-          },
-          paymentInfo: {
-            cardNumber: formData.cardNumber.replace(/\s/g, ''),
-            expiryDate: formData.expiryDate,
-            cvv: formData.cvv,
-            cardName: formData.cardName
-          }
-        })
-      });
-
-      const result = await response.json();
+      // Simulate order processing
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      if (response.ok) {
-        setOrderComplete(true);
-        dispatch({ type: 'CLEAR_CART' });
-      } else {
-        alert('Error processing order. Please try again.');
-      }
+      // Clear cart and show success message
+      setOrderComplete(true);
+      dispatch({ type: 'CLEAR_CART' });
+      
     } catch (error) {
       console.error('Error processing order:', error);
       alert('Error processing order. Please try again.');

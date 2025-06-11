@@ -9,7 +9,10 @@
     "server": "nodemon server/index.js",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server/index.js",
+    "build:prod": "npm run build && npm run start",
+    "deploy": "npm run build && set NODE_ENV=production&& npm start"
   },
   "dependencies": {
     "lucide-react": "^0.344.0",

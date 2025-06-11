@@ -118,7 +118,7 @@ const Home: React.FC = () => {
 
   const fetchBestSellers = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/perfumes/bestsellers');
+      const response = await fetch('/.netlify/functions/api/perfumes/bestsellers');
       const data = await response.json();
       setBestSellers(data);
     } catch (error) {
