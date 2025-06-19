@@ -118,7 +118,7 @@ const Home: React.FC = () => {
 
   const fetchBestSellers = async () => {
     try {
-      const response = await fetch('/.netlify/functions/api/perfumes/bestsellers');
+      const response = await fetch('/api/perfumes/bestsellers');
       const data = await response.json();
       setBestSellers(data);
     } catch (error) {
@@ -142,7 +142,7 @@ const Home: React.FC = () => {
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://localhost:3001/api/newsletter', {
+      await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })

@@ -5,6 +5,8 @@ import { MongoClient } from 'mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import nodemailer from 'nodemailer';
+import twilio from 'twilio';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +17,139 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+// Create a transporter for sending emails
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'tulynx.perfumes@gmail.com',
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+// Initialize Twilio client with error handling
+let twilioClient;
+const isDevelopment = process.env.NODE_ENV !== 'production';
+
+try {
+  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+    console.warn('⚠️ Twilio credentials not found. Running in development mode.');
+    console.warn('📱 OTPs will be logged to console instead of sent via SMS.');
+  } else {
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+    console.log('✅ Twilio client initialized successfully');
+  }
+} catch (error) {
+  console.error('❌ Error initializing Twilio client:', error);
+}
+
+// Store OTPs temporarily (in production, use a database)
+const otpStore = new Map();
+
+// Generate a 6-digit OTP
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Send OTP endpoint
+app.post('/api/auth/send-otp', async (req, res) => {
+  const { phoneNumber } = req.body;
+
+  try {
+    // Generate OTP
+    const otp = generateOTP();
+    
+    // Store OTP with 5-minute expiry
+    otpStore.set(phoneNumber, {
+      otp,
+      expiry: Date.now() + 5 * 60 * 1000 // 5 minutes
+    });
+
+    // If Twilio is configured, send OTP via SMS
+    if (twilioClient && process.env.TWILIO_PHONE_NUMBER) {
+      try {
+        await twilioClient.messages.create({
+          body: `Your Tulynx Perfumes verification code is: ${otp}. Valid for 5 minutes.`,
+          to: phoneNumber,
+          from: process.env.TWILIO_PHONE_NUMBER
+        });
+        console.log(`✅ OTP sent via SMS to ${phoneNumber}`);
+      } catch (smsError) {
+        console.error('❌ Error sending SMS:', smsError);
+        // Continue with the response even if SMS fails
+      }
+    } else {
+      // Log OTP to console for development
+      console.log('\n📱 DEVELOPMENT MODE - OTP Details:');
+      console.log('--------------------------------');
+      console.log(`Phone Number: ${phoneNumber}`);
+      console.log(`OTP: ${otp}`);
+      console.log('--------------------------------\n');
+    }
+
+    res.json({ 
+      message: 'OTP sent successfully',
+      // In development, include the OTP in the response
+      ...(isDevelopment && { 
+        otp,
+        mode: 'development',
+        message: 'OTP sent successfully (Development Mode - Check console for OTP)'
+      })
+    });
+  } catch (error) {
+    console.error('❌ Error in send-otp endpoint:', error);
+    res.status(500).json({ 
+      error: 'Failed to send OTP',
+      details: isDevelopment ? error.message : undefined
+    });
+  }
+});
+
+// Verify OTP endpoint
+app.post('/api/auth/verify-otp', (req, res) => {
+  const { phoneNumber, otp } = req.body;
+
+  try {
+    const storedData = otpStore.get(phoneNumber);
+
+    if (!storedData) {
+      return res.status(400).json({ error: 'OTP expired or not found' });
+    }
+
+    if (Date.now() > storedData.expiry) {
+      otpStore.delete(phoneNumber);
+      return res.status(400).json({ error: 'OTP expired' });
+    }
+
+    if (storedData.otp !== otp) {
+      return res.status(400).json({ error: 'Invalid OTP' });
+    }
+
+    // Clear OTP after successful verification
+    otpStore.delete(phoneNumber);
+
+    // Generate session token
+    const token = uuidv4();
+
+    res.json({
+      message: 'OTP verified successfully',
+      token,
+      phoneNumber
+    });
+  } catch (error) {
+    console.error('Error verifying OTP:', error);
+    res.status(500).json({ error: 'Failed to verify OTP' });
+  }
+});
+
+// Logout endpoint
+app.post('/api/auth/logout', (req, res) => {
+  // In a real app, you might want to invalidate the token
+  res.json({ message: 'Logged out successfully' });
+});
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
@@ -383,11 +518,54 @@ app.post('/api/newsletter', (req, res) => {
   res.json({ message: 'Successfully subscribed to newsletter!' });
 });
 
-app.post('/api/contact', (req, res) => {
+app.post('/api/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;
-  // In a real app, you'd save this to a database or send an email
-  console.log('Contact form submission:', { name, email, subject, message });
-  res.json({ message: 'Message sent successfully!' });
+  
+  try {
+    // Email to Tulynx
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'tulynx.perfumes@gmail.com',
+      to: 'tulynx.perfumes@gmail.com',
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    };
+
+    // Send email
+    await transporter.sendMail(mailOptions);
+
+    // Send confirmation email to user
+    const confirmationMailOptions = {
+      from: process.env.EMAIL_USER || 'tulynx.perfumes@gmail.com',
+      to: email,
+      subject: 'Thank you for contacting Tulynx Perfumes',
+      html: `
+        <h2>Thank you for contacting Tulynx Perfumes!</h2>
+        <p>Dear ${name},</p>
+        <p>We have received your message and will get back to you as soon as possible.</p>
+        <p>Here's a copy of your message:</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+        <br>
+        <p>Best regards,</p>
+        <p>Tulynx Perfumes Team</p>
+      `
+    };
+
+    await transporter.sendMail(confirmationMailOptions);
+
+    res.json({ message: 'Message sent successfully!' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ error: 'Failed to send message. Please try again.' });
+  }
 });
 
 app.post('/api/checkout', async (req, res) => {

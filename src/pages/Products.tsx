@@ -50,7 +50,7 @@ const Products: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/.netlify/functions/api/perfumes');
+      const response = await fetch('/api/perfumes');
       const data = await response.json();
       setProducts(data);
       setFilteredProducts(data);

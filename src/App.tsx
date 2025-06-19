@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -10,27 +10,76 @@ import Checkout from './pages/Checkout';
 import Test from './pages/Test';
 import Footer from './components/Footer';
 import Cart from './components/Cart';
+import MyOrders from './pages/MyOrders';
+import Login from './pages/Login';
+import ProtectedRoute from './components/ProtectedRoute';
 
-function App() {
+const App: React.FC = () => {
   return (
     <CartProvider>
       <Router>
-        <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50">
+        <div className="flex flex-col min-h-screen">
           <Navbar />
-          <Cart />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/test" element={<Test />} />
-          </Routes>
+          <main className="flex-grow">
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/products" element={
+                <ProtectedRoute>
+                  <Products />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/about" element={
+                <ProtectedRoute>
+                  <About />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/contact" element={
+                <ProtectedRoute>
+                  <Contact />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/checkout" element={
+                <ProtectedRoute>
+                  <Checkout />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/test" element={
+                <ProtectedRoute>
+                  <Test />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/my-orders" element={
+                <ProtectedRoute>
+                  <MyOrders />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="/cart" element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              } />
+              
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
           <Footer />
         </div>
       </Router>
     </CartProvider>
   );
-}
+};
 
 export default App;
