@@ -20,6 +20,7 @@ const App: React.FC = () => {
       <Router>
         <div className="flex flex-col min-h-screen">
           <Navbar />
+          <Cart />
           <main className="flex-grow">
             <Routes>
               <Route path="/login" element={<Login />} />
